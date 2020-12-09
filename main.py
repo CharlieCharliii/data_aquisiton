@@ -15,3 +15,9 @@ if __name__ == '__main__':
     if client.connect() == False:
         print("Could not connect to " + ipAddress)
         exit(-1)
+
+    # go over data in valueDescriptors one by one
+    # basing on Type get either a coil or input value specified by register
+    #   handle errors nicely
+    # print either in human readable or "csv" format
+    # pretty much done
