@@ -1,0 +1,23 @@
+IN	6	Active set system temp.	deg. C	sh
+IN	14	Actual system output	%	ut
+IN	15	Bolier water temperature	deg. C	uh
+IN	29	Heating circuit pump A1	h	u
+IN	43	Cylinder primary pump	h	u
+IN	60	Operating mode heating circuit	-	u
+IN	61	Set room temp. HC1	deg. C	st
+IN	78	COP DHW mode	deg. C	ut
+IN	89	Outside temperature	deg. C	st
+IN	95	Flow temp. Secondary	deg. C	st
+IN	101	System flow temp	deg. C	st
+IN	103	Buffder cylinder temp	deg. C	st
+IN	105	DHW temperature top	deg. C	st
+IN	161	COP heating mode	-	ut
+IN	171	Speed, fan 1	RPM	u
+IN	174	Output, defrost enabled	-	u
+ST	6	Electric heating stage 1	-
+ST	9	Heating circuit pump HC1	-
+ST	16	DHW circulation pump	-
+ST	18	Secondary pump	-
+ST	22	Cylinder primary pump	-
+ST	52	Primary source 1 (fan or primary pump)	-
+ST	200	Device failure
