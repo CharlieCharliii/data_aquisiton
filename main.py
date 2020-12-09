@@ -1,16 +1,17 @@
-# This is a sample Python script.
+#!/usr/bin/python
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from data import valueDescriptors
 
+import sys
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    ipAddress = "127.0.0.1"
+    if len(sys.argv) == 2:
+        ipAddress = sys.argv[1]
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    client = ModbusClient(ipAddress)
+    if client.connect() == False:
+        print("Could not connect to " + ipAddress)
+        exit(-1)
