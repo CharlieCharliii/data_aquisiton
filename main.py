@@ -13,11 +13,19 @@ if __name__ == '__main__':
 
     client = ModbusClient(ipAddress)
     if client.connect() == False:
-        print("Could not connect to " + ipAddress)
+        print("Could not connect to " + ipAddress, file=sys.stderr) # Why stderr? see below
         exit(-1)
 
     # go over data in valueDescriptors one by one
+    for descriptor in valueDescriptors:
     # basing on Type get either a coil or input value specified by register
-    #   handle errors nicely
-    # print either in human readable or "csv" format
-    # pretty much done
+        if descriptor["type"] == "Input Register":
+            # Get input value and handle errors
+            value = 21.37 # placeholder
+            print(descriptor["Descriptor"] + ": " + str(value) + descriptor["Unit"])
+        elif descriptor["type"] == "Discrete Input":
+            # Get coil value and handle errors
+            pass
+        else:
+            # Print human readable errors to stderr so that the output is not cluttered if the data is to be parsed
+            print("Unknown value type: " + descriptor["type"], file=sys.stderr)
