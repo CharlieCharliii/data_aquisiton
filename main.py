@@ -34,20 +34,15 @@ def run_sync_client():
 
     client.close()
 
-def switch():
+# switchcase - run function for Discrete Input or Input Register or return Error
+if (ValueDescriptor["Type"]) == "Discrete Input":
+    client.read_discrete_inputs(ipAddress,valueDescriptor["Register"])
 
-    option = int(ValueDescriptor["Type"])
+elif (ValueDescriptor["Type"]) == "Input Register":
+     client.read_input_registers(ipAddress,valueDescriptor["Register"])
 
-    if option == "Discrete Input":
-        client.read_discrete_inputs(ipAddress,valueDescriptor["Register"])
-
-    elif option == "Input Register":
-        client.read_input_registers(ipAddress,valueDescriptor["Register"])
-
-    else:
-        print("Incorrect register type")
-
-switch()
+else:
+    print("Incorrect register type")
 
 if __name__ == '__main__':
 
