@@ -38,5 +38,4 @@ valueDescriptors =  [ValueDescriptor("Input Register", 13, "Actual system output
                      ValueDescriptor("Discrete Input", 49, "Relay EEV1 compressor", "None"),
                      ValueDescriptor("Discrete Input", 51, "Primary source 1 (fan or primary pump)", "None"),
                      ValueDescriptor("Discrete Input", 53, "Secondary pump 1", "None"),
-                     ValueDescriptor("Discrete Input", 54, "Relay status compressor", "None"),
-                     ValueDescriptor("Discrete Input", 200, "Device failure", "None")]
+                     ValueDescriptor("Discrete Input", 54, "Relay status compressor", "None")]
