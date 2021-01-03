@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 
 from data import valueDescriptorsTCP
@@ -10,12 +11,6 @@ TCP_host = "192.168.1.20"
 def run_sync_client():
     clientTCP = ModbusTcpClient(host=TCP_host, port=502, retries=3)
     #clientRTU1 = ModbusSerialClient1(method='rtu', port='/dev/ttySC0', stopbits=1, timeout=1, baudrate=19200, parity='E')
-
-    # from pymodbus.transaction import ModbusRtuFramer
-    # client = ModbusClient('localhost', port=5020, framer=ModbusRtuFramer)
-    # client = ModbusClient(method='binary', port='/dev/ptyp0', timeout=1)
-    # client = ModbusClient(method='ascii', port='/dev/ptyp0', timeout=1)
-    # client = ModbusClient(method='rtu', port='/dev/ptyp0', timeout=1, baudrate=9600)
 
     clientTCP.connect()
 
