@@ -72,4 +72,4 @@ if __name__ == '__main__':
 
         else:
             # Print human readable errors to certain Address
-            print("Unknown value type: " + "Slave ID: " + ValueDescriptorTCP[0] + ", "  + ValueDescriptorTCP[1] +": "  + ValueDescriptorTCP[2])
+            print("Unknown value type: " + "Slave ID: " + ValueDescriptorTCP[0] + ", " + ValueDescriptorTCP[1] + ": " + ValueDescriptorTCP[2])
