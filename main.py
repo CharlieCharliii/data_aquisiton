@@ -1,15 +1,16 @@
+
 #!/usr/bin/python
 
-from data import valueDescriptors
+from data import valueDescriptorsTCP
 
 import sys
-from pymodbus.client.sync import ModbusTcpClient as ModbusClient
-#from pymodbus.client.sync import ModbusSerialClient as ModbusClient
+
+from pymodbus.client.sync import ModbusTcpClient
 TCP_host = "192.168.1.20"
 
 def run_sync_client():
-    client = ModbusClient(host=TCP_host, port=502, retries=3)
-    #client = ModbusClient(method='rtu', port='/dev/ttySC0', timeout=1, baudrate=19200, parity='E')
+    clientTCP = ModbusTcpClient(host=TCP_host, port=502, retries=3)
+    #clientRTU1 = ModbusSerialClient1(method='rtu', port='/dev/ttySC0', stopbits=1, timeout=1, baudrate=19200, parity='E')
 
     # from pymodbus.transaction import ModbusRtuFramer
     # client = ModbusClient('localhost', port=5020, framer=ModbusRtuFramer)
@@ -17,23 +18,9 @@ def run_sync_client():
     # client = ModbusClient(method='ascii', port='/dev/ptyp0', timeout=1)
     # client = ModbusClient(method='rtu', port='/dev/ptyp0', timeout=1, baudrate=9600)
 
-    client.connect()
+    clientTCP.connect()
 
-    # log.debug("Reading Coils")
-    # rq = client.read_coils(1, 1, unit=UNIT)
-    # log.debug("ReadBitResponse: " + str(rq.bits))
-
-    # log.debug("Read discrete inputs")
-    # rq = client.read_discrete_inputs(9, 1, unit=UNIT)
-    # assert(not rq.isError())     # test that we are not an error
-
-    # log.debug("Read input registers")
-    # rq = client.read_input_registers(6, 1, unit=UNIT)
-    # assert(not rq.isError())     # test that we are not an error
-
-
-    client.close()
-
+    clientTCP.close()
 
 if __name__ == '__main__':
     run_sync_client()
@@ -42,34 +29,48 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         ipAddress = sys.argv[1]
 
-    client = ModbusClient(ipAddress)
-    if client.connect() == False:
+    clientTCP = ModbusTcpClient(ipAddress)
+    if clientTCP.connect() == False:
         print("Could not connect to " + ipAddress)
         exit(-1)
 
     # switchcase - run function for Discrete Input or Input Register
-    # go over data in valueDescriptors one by one
-    for ValueDescriptor in valueDescriptors:
-        # Valuedescriptor: ["Type", "Register", "Description", "Unit"]
-        # based on the Register Type get either a Discrete Input value, Input Register status or return an Error
-        if  ValueDescriptor[0] == "Input Register":
-            # get input registers values and handle error
-            value = client.read_input_registers(ValueDescriptor[1],1, unit=1)
-            #val = client.read_input_registers(15,0)
-            #value = str(val)
-            #value=21.37
-            #print(value)
-            # print human readable values along with short description - Register Type, Register Number, Description, Register Value, Unit
-            print(ValueDescriptor[0] + ": " + str(ValueDescriptor[1]) + ", " + ValueDescriptor[2] + ": " + str(value.registers) + " " + ValueDescriptor[3] + ";")
+    # go over data in valueDescriptorsTCP one by one
+    for ValueDescriptorTCP in valueDescriptorsTCP:
+        # Valuedescriptor: ["SlaveID", "Type", "Register", "Description", "Unit"]
+        # based on the Register Type get either an Inout Register, Holding Register or Discrete Input status or return an Error
 
-        elif ValueDescriptor[0] == "Discrete Input":
-            # get coil status and handle error
-            status = client.read_discrete_inputs(ValueDescriptor[1],1,unit=1)
+        if  ValueDescriptorTCP[1] == "Input Register":
+            # get input registers values and handle error
+            # raw value read from the Vitogate
+            result = clientTCP.read_input_registers(ValueDescriptorTCP[2],1, unit=ValueDescriptorTCP[0])
+            # divider of the result to take decimal point info account
+            divider = ValueDescriptorTCP[5]
+            res = result.registers
+            # result divided by the divider
+            value = (float(result.registers[0])/divider)
             # print human readable values along with short description - Register Type, Register Number, Description, Register Value, Unit
-            print(ValueDescriptor[0] + ": " + str(ValueDescriptor[1]) + ", " + ValueDescriptor[2] + ": " + str(status.bits[0]) + ", " + ValueDescriptor[3] + ";")
+            print("SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " + ValueDescriptorTCP[3] + ": " + str(value) + " " + ValueDescriptorTCP[4] + ";")
+
+        elif ValueDescriptorTCP[1] == "Holding Register":
+            # get holding registers values and handle error
+            # raw value read from the Vitogate
+            result = clientTCP.read_holding_registers(ValueDescriptorTCP[2],1, unit=ValueDescriptorTCP[0])
+            # divider of the result to take decimal point info account
+            divider = ValueDescriptorTCP[5]
+            # result divided by the divider
+            value = (float(result.registers[0])/divider)
+            # print human readable values along with short description - Register Type, Register Number, Description, Register Value, Unit
+            print("SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " + ValueDescriptorTCP[3] + ": " + str(value) + " " + ValueDescriptorTCP[4] + ";")
+            pass
+
+        elif ValueDescriptorTCP[1] == "Discrete Input":
+            # get coil status and handle error
+            status = clientTCP.read_discrete_inputs(ValueDescriptorTCP[2],1, unit=ValueDescriptorTCP[0])
+            # print human readable values along with short description - Register Type, Register Number, Description, Register Value, Unit
+            print("SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " + ValueDescriptorTCP[3] + ": " + str(status.bits[0]) + ", " + ValueDescriptorTCP[4] + ";")
             pass
 
         else:
             # Print human readable errors to certain Address
-            print("Unknown value type: " + ValueDescriptor[0])
-            
+            print("Unknown value type: " + "Slave ID: " + ValueDescriptorTCP[0])
