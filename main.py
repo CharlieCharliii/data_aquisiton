@@ -125,7 +125,7 @@ if __name__ == '__main__':
     R21=read_energy.registers[1]
     PVprod = float(R10/1000)
     PVenergy = float((R20*(256**2)+R21)/100)
-    print("PV production = " + str(PVprod) + "kW")
+    print("PV production = " + str(PVprod) + " kW")
     print("PV energy = " + str(PVenergy) + " kWh") #printing value read in above line
 
 
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     R21=read_energy.registers[1]
     PVprod = float(R10/1000)
     PVenergy = float((R20*(256**2)+R21)/100)
-    print("Heat pump consumption =  " + str(PVprod) + "kW")
+    print("Heat pump consumption =  " + str(PVprod) + " kW")
     print("Heat pump energy = " + str(PVenergy) + " kWh") #printing value read in above line
             
 '''
