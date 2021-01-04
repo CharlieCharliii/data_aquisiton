@@ -51,7 +51,7 @@ def rs485_enable():
     fcntl.ioctl(ser2, TIOCSRS485, buf)
 #end of rs485_enable():
 
-#clientSerial0 = ModbusSerialClient(method='rtu', port='/dev/ttySC0', stopbits=1, timeout=1, baudrate=19200, parity='E')
+clientSerial0 = ModbusSerialClient(method='rtu', port='/dev/ttySC0', stopbits=1, timeout=1, baudrate=19200, parity='E')
 clientSerial1 = ModbusSerialClient(method='rtu', port='/dev/ttySC1', stopbits=1, timeout=1, baudrate=9600, parity='N')
 
 clientSerial1.connect()
@@ -88,7 +88,8 @@ if __name__ == '__main__':
             # result divided by the divider
             value = (float(result.registers[0])/divider)
             # print human readable values along with short description - Register Type, Register Number, Description, Register Value, Unit
-            print("SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " + ValueDescriptorTCP[3] + ": " + str(value) + " " + ValueDescriptorTCP[4] + ";")
+            #"SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " +
+            print(ValueDescriptorTCP[3] + ": " + str(value) + " " + ValueDescriptorTCP[4] + ";")
 
         elif ValueDescriptorTCP[1] == "Holding Register":
             # get holding registers values and handle error
@@ -99,21 +100,50 @@ if __name__ == '__main__':
             # result divided by the divider
             value = (float(result.registers[0])/divider)
             # print human readable values along with short description - Register Type, Register Number, Description, Register Value, Unit
-            print("SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " + ValueDescriptorTCP[3] + ": " + str(value) + " " + ValueDescriptorTCP[4] + ";")
+            #"SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " +
+            print(ValueDescriptorTCP[3] + ": " + str(value) + " " + ValueDescriptorTCP[4] + ";")
             pass
 
         elif ValueDescriptorTCP[1] == "Discrete Input":
             # get coil status and handle error
             status = clientTCP.read_discrete_inputs(ValueDescriptorTCP[2],1, unit=ValueDescriptorTCP[0])
             # print human readable values along with short description - Register Type, Register Number, Description, Register Value, Unit
-            print("SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " + ValueDescriptorTCP[3] + ": " + str(status.bits[0]) + ", " + ValueDescriptorTCP[4] + ";")
+            #"SlaveID: " + str(ValueDescriptorTCP[0]) + ", " + ValueDescriptorTCP[1] + ": " + str(ValueDescriptorTCP[2]) + ", " +
+            print(ValueDescriptorTCP[3] + ": " + str(status.bits[0]) + ", " + ValueDescriptorTCP[4] + ";")
             pass
 
         else:
             # Print human readable errors to certain Address
             print("Unknown value type: " + "Slave ID: " + ValueDescriptorTCP[0] + ", " + ValueDescriptorTCP[1] + ": " + ValueDescriptorTCP[2])
 
+            
+    #read PV production
+    read_power = clientSerial1.read_holding_registers(address=10, count=2, unit=10)
+    read_energy=clientSerial1.read_holding_registers(address = 20, count =2, unit=10)
+    R10 = read_power.registers[0]
+    R20=read_energy.registers[0]
+    R21=read_energy.registers[1]
+    PVprod = float(R10/1000)
+    PVenergy = float((R20*(256**2)+R21)/100)
+    print("PV production = " + str(PVprod) + "kW")
+    print("PV energy = " + str(PVenergy) + " kWh") #printing value read in above line
 
+
+    #delay needed by the RS485 bus
+    time.sleep(.1)
+
+    #read Heat Pump consumption
+    read_power = clientSerial1.read_holding_registers(address=10, count=2, unit=20)
+    read_energy=clientSerial1.read_holding_registers(address = 20, count =2, unit=20)
+    R10 = read_power.registers[0]
+    R20=read_energy.registers[0]
+    R21=read_energy.registers[1]
+    PVprod = float(R10/1000)
+    PVenergy = float((R20*(256**2)+R21)/100)
+    print("Heat pump consumption =  " + str(PVprod) + "kW")
+    print("Heat pump energy = " + str(PVenergy) + " kWh") #printing value read in above line
+            
+'''
 for ValueDescriptorSerial1 in valueDescriptorsSerial1:
     # Valuedescriptor: ["SlaveID", "Type", "Register", "Description", "Unit"]
     # based on the Register Type get either an Inout Register, Holding Register or Discrete Input status or return an Error
@@ -151,3 +181,4 @@ for ValueDescriptorSerial1 in valueDescriptorsSerial1:
     else:
         # Print human readable errors to certain Address
         print("Unknown value type: " + "Slave ID: " + ValueDescriptorSerial1[0] + ", " + ValueDescriptorSerial1[1] + ": " + ValueDescriptorSerial1[2])
+'''
