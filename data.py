@@ -47,7 +47,7 @@ valueDescriptorsTCP = [#ValueDescriptorTCP(1, "Input Register", 13, "Actual syst
 ValueDescriptorSerial1 = namedtuple("ValueDescriptorSerial1", ["SlaveID", "Type", "Register", "Description", "Unit", "divider"])
 
 valueDescriptorsSerial1 = [#energy meter value E=(R20x256^2 + R21)*10^-2 kWh
-                        ValueDescriptorSerial1(10, "Holding Register", 20, "Energy drawn from grid", "(valuex256^2)*10^-2 kWh", 1),
-                        ValueDescriptorSerial1(10, "Holding Register", 21, "Energy drawn from grid", "(value*10^-2) kWh", 1),
-                        ValueDescriptorSerial1(20, "Holding Register", 20, "Energy drawn from grid", "(valuex256^2)*10^-2 kWh", 1),
-                        ValueDescriptorSerial1(20, "Holding Register", 21, "Energy drawn from grid", "(value*10^-2) kWh", 1),]
+                        ValueDescriptorSerial1(10, "Holding Register", 20, "PV production", "(valuex256^2)*10^-2 kWh", 1),
+                        ValueDescriptorSerial1(10, "Holding Register", 21, "PV production", "(value*10^-2) kWh", 1),
+                        ValueDescriptorSerial1(20, "Holding Register", 20, "Heat Pump consumption", "(valuex256^2)*10^-2 kWh", 1),
+                        ValueDescriptorSerial1(20, "Holding Register", 21, "Heat Pump consumption", "(value*10^-2) kWh", 1),]
